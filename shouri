@@ -1,0 +1,100 @@
+int Analogx = A0;
+int Analogy = A1;
+int Xpos = 0;
+int Ypos = 0;
+double pi =  3.14159265358979323846;
+int angle = 0;
+double angleT = 0.0;
+int aXpos = 0;
+int aYpos = 0;
+
+void setup() {
+  // put your setup code here, to run once:
+  
+  Serial.begin(9600);
+
+}
+
+void loop() {
+  delay(250);
+  // put your main code here, to run repeatedly:
+  //the switch below is intentional
+  int X = analogRead(Analogx);
+  int Y = analogRead(Analogy);
+  Ypos = X - (510);
+  Xpos = Y - (506);
+  
+  /*
+  Serial.print("X dimension is ");
+  Serial.print(Xpos);
+  Serial.print(". Y dimension is ");
+  Serial.println(Ypos);
+  */
+  //Serial.print("The degree is ");
+  
+  
+  
+  if (Degree(Xpos, Ypos) != 2000) {
+    Serial.println(Degree(Xpos, Ypos));
+  }
+  else {
+    Serial.println("null");
+  }
+  
+  
+  
+}
+int Degree(int Xpos, int Ypos) {
+  aXpos = abs(Xpos);
+  aYpos = abs(Ypos);
+  angleT = 0.0;
+  angle = 0;
+  //angleT = (atan(((double) aYpos)/((double) aXpos)) * 180/pi);
+  //angle = angleT;
+  if ((aXpos > 10) && (aYpos > 10)) {
+    
+    if ((Ypos < 0) && (Xpos > 0) ) {
+      angleT = (atan(((double) aYpos)/((double) aXpos)) * 180/pi);
+      
+      angle = angleT + 90;
+      //Serial.println(((String) angle) + "here1" + ((String)angleT));
+      return angle;
+    }
+    if ((Ypos < 0) && (Xpos < 0)) {
+      angleT = (atan(((double) aXpos)/((double) aYpos)) * 180/pi);
+      angle = angleT + 180;
+      //Serial.println("here2");
+      return angle;
+      
+    }
+    if ((Ypos > 0) && (Xpos < 0)) {
+      angleT = (atan(((double) aYpos)/((double) aXpos)) * 180/pi);
+      angle = angleT + 270;
+      //Serial.println("here3");
+      return angle;
+    } 
+    else {
+      angleT = (atan(((double) aXpos)/((double) aYpos)) * 180/pi);
+      angle = angleT;
+      return angle;
+    }
+    
+  }
+  else if ((Ypos == 0) && (Xpos > 0) ) {
+    return 90;
+  }
+  else if ((Ypos == 0) && (Xpos < 0) ) {
+    return 270;
+  }
+  else if ((Ypos < 0) && (Xpos == 0) ) {
+    return 180;
+  }
+  else if ((Ypos > 0) && (Xpos == 0) ) {
+    return 0;
+
+  }
+  else {
+    return 2000;
+  }
+  
+}
