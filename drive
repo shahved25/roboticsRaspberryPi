@@ -1,0 +1,69 @@
+import easygopigo3 as easy
+import time
+
+# Initialize GoPiGo3
+GPG = easy.EasyGoPiGo3()
+sensor = GPG.init_distance_sensor()
+
+# Threshold distance in cm to stop if an obstacle is too close
+THRESHOLD_DISTANCE = 20
+
+# Define movement functions
+def move_forward():
+    distance = sensor.read_mm() / 10  # Convert mm to cm
+    if distance < THRESHOLD_DISTANCE:
+        print(f"🚨 Obstacle detected at {distance:.1f} cm! Stopping.")
+        stop()
+    else:
+        GPG.set_motor_dps(GPG.MOTOR_LEFT, 300)
+        GPG.set_motor_dps(GPG.MOTOR_RIGHT, 300)
+        print("Moving Forward")
+
+def move_backward():
+    GPG.set_motor_dps(GPG.MOTOR_LEFT, -300)
+    GPG.set_motor_dps(GPG.MOTOR_RIGHT, -300)
+    print("Moving Backward")
+
+def turn_left():
+    GPG.set_motor_dps(GPG.MOTOR_LEFT, -200)
+    GPG.set_motor_dps(GPG.MOTOR_RIGHT, 200)
+    print("Turning Left")
+
+def turn_right():
+    GPG.set_motor_dps(GPG.MOTOR_LEFT, 200)
+    GPG.set_motor_dps(GPG.MOTOR_RIGHT, -200)
+    print("Turning Right")
+
+def stop():
+    GPG.set_motor_dps(GPG.MOTOR_LEFT, 0)
+    GPG.set_motor_dps(GPG.MOTOR_RIGHT, 0)
+    print("Stopped")
+
+print("Control the GoPiGo with: W (forward), S (backward), A (left), D (right), Q (stop), X (exit)")
+
+try:
+    while True:
+        key = input("Enter command: ").strip().lower()
+
+        if key == "w":
+            move_forward()
+        elif key == "s":
+            move_backward()
+        elif key == "a":
+            turn_left()
+        elif key == "d":
+            turn_right()
+        elif key == "q":
+            stop()
+        elif key == "x":
+            stop()
+            print("Exiting program...")
+            break
+        else:
+            print("Invalid command! Use W/A/S/D/Q/X.")
+
+        time.sleep(0.1)  # Avoid excessive CPU usage
+
+except KeyboardInterrupt:
+    stop()
+    print("\nProgram interrupted. Stopping the robot.")
